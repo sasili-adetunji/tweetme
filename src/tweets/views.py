@@ -1,8 +1,15 @@
 from django.shortcuts import render, get_object_or_404 
-from django.views.generic import DetailView, ListView, CreateView
+from django.urls import reverse_lazy
+from django.views.generic import (
+    DetailView,
+    ListView,
+    CreateView,
+    UpdateView,
+    DeleteView
+)
 from .models import Tweet
 from .forms import TweetModelForm
-from .mixin import FormUserNeededMixin
+from .mixin import FormUserNeededMixin,UserOwnerMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 class TweetCreateView(FormUserNeededMixin, CreateView):
@@ -32,6 +39,20 @@ class TweetListView(ListView):
       context = super(TweetListView, self).get_context_data(*args, **kwargs)
 
       return context
+
+class TweetUpdateView(LoginRequiredMixin, UserOwnerMixin, UpdateView):
+    queryset = Tweet.objects.all()
+    form_class = TweetModelForm
+    template_name = 'tweets/update_view.html'
+    success_url = '/tweet/'
+
+
+class TweetDeleteView(DeleteView):
+    model = Tweet
+    template_name = 'tweets/delete_confirm.html'
+    success_url = reverse_lazy('home')
+
+
 
 # def tweet_create_view(request):
 #     form = TweetModelForm(request.POST or None)

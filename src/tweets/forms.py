@@ -8,7 +8,6 @@ class TweetModelForm(forms.ModelForm):
     model = Tweet
     fields = [
        'content',
-      #  'user',
     ]
 
   def clean_content(self, *args, **kwargs):

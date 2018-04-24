@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404 
 from django.urls import reverse_lazy
+from django.db.models import Q
 from django.views.generic import (
     DetailView,
     ListView,
@@ -20,7 +21,17 @@ class TweetDetailView(DetailView):
     queryset = Tweet.objects.all()
 
 class TweetListView(ListView):
-    queryset = Tweet.objects.all()
+
+    def get_queryset(self, *args, **kwargs):
+
+        queryset = Tweet.objects.all()
+        query = self.request.GET.get('q', None)
+        if query is not None:
+            queryset = queryset.filter(
+                Q(content__icontains=query) |
+                Q(user__username__icontains=query)
+                )
+        return queryset
 
     def get_context_data(self, *args, **kwargs):
       context = super(TweetListView, self).get_context_data(*args, **kwargs)

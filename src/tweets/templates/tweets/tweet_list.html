@@ -24,9 +24,11 @@
               var tweetUser = value.user;
               var tweetContent = value.content;
               var tweetKey = value.key;
+              var dateDisplay = value.date_display;
+
               $('#tweet-content').append(
                 "<div class='media'><div class='media-body'>" + tweetContent + '<br /> via ' + tweetUser.username +
-                ' | ' + "<a href='#'> View </a>"  +
+                ' | ' + dateDisplay + " | " +  "<a href='#'> View </a>"  +
                 "</div></div> <hr /> "
               )
             })

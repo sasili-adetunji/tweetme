@@ -51,11 +51,11 @@
     fetchTweets()
     $('#tweet-form').submit(function (e){
       e.preventDefault()
-      _this = $(this)
-      formData = _this.serialize()
+      var _this = $(this)
+      var formData = _this.serialize()
       $.ajax({
         url: '/api/tweet/create/',
-        data: FormData,
+        data: formData,
         method: 'POST',
         success: function(data){  
           console.log(data)

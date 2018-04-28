@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
-    'tweets',]
+    'tweets',
+    'rest_framework',
+    'accounts',
+    ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -15,6 +15,7 @@
   $(document).ready(function(){
       var query = getParameterByName('q');
       var tweetList = [];
+      var nextTweetUrl;
 
       function attachTweet(tweetValue, prepend){
         var tweetUser = tweetValue.user;
@@ -40,21 +41,41 @@
             })
         }
       }
-    function fetchTweets(){
+    function fetchTweets(url){
+      var fetchUrl;
+      if(!url){
+        fetchUrl = '/api/tweet/'
+      } else {
+        fetchUrl = url
+      }
       $.ajax({
-        url: '/api/tweet/',
+        url: fetchUrl,
         data: {
           'q': query 
         },
         method: 'GET',
         success: function(data){    
-          tweetList = data  
+          tweetList = data.results
+          if (data.next){
+            nextTweetUrl = data.next
+          } else {
+              $('#loadmore').css('display', 'none')
+          }
           parseTweets()
       },
         error: function(data){
           console.log('error')}
       })
     }
+
+    $('#loadmore').bind('click', function(e){
+      e.preventDefault()
+      if (nextTweetUrl){
+        fetchTweets(nextTweetUrl)
+      }
+    })
+
+    // fetchTweets()
     var charsLeft = 140
     var charsCurrent = 0
     $('#tweet-form').append("<span id='tweetCharLeft'>" + charsLeft +  "</span>")
@@ -125,11 +146,11 @@
         <hr />
       {% endif %}
       {% for object in object_list %}
-
       <div id='tweet-content'>
 
       </div>
   {% endfor %}
+      <a href="#" id="loadmore"> Load more tweets </a>
    </div>
 </div> 
   {% endblock content%}

@@ -55,28 +55,56 @@
           console.log('error')}
       })
     }
+    var charsLeft = 140
+    var charsCurrent = 0
+    $('#tweet-form').append("<span id='tweetCharLeft'>" + charsLeft +  "</span>")
+
+    $('#tweet-form textarea').keyup(function(e){
+      var tweetVal = $(this).val()
+      charsCurrent = charsLeft - tweetVal.length
+      var spanChars =   $('#tweetCharLeft')
+      spanChars.text(charsCurrent)
+      if (charsCurrent > 0) {
+        spanChars.remove('grey-color')
+        spanChars.remove('red-color')
+        // remove classes
+      } else if (charsCurrent == 0){
+        spanChars.addClass('grey-color')
+        spanChars.remove('red-color')
+
+        // add grey class
+      } else if (charsCurrent < 0){
+        spanChars.addClass('red-color')
+        spanChars.remove('grey-color')
+        //add red class
+      }
+    })
 
     fetchTweets()
     $('#tweet-form').submit(function (e){
       e.preventDefault()
       var _this = $(this)
       var formData = _this.serialize()
-      $.ajax({
-        url: '/api/tweet/create/',
-        data: formData,
-        method: 'POST',
-        success: function(data){
-          _this.find('input[type=text], textarea').val('')
-          attachTweet(data, true)
-          // console.log(data)
-          // fetchTweets()
-      },
-        error: function(data){
-          console.log(data.statusText)
-          console.log(data.status)
+      if (charsCurrent >= 0) {
+        $.ajax({
+          url: '/api/tweet/create/',
+          data: formData,
+          method: 'POST',
+          success: function(data){
+            _this.find('input[type=text], textarea').val('')
+            attachTweet(data, true)
+            // console.log(data)
+            // fetchTweets()
+        },
+          error: function(data){
+            console.log(data.statusText)
+            console.log(data.status)
 
-        }
-      })
+          }
+        })
+      } else {
+        console.log('Can not send tweet too long')
+      }
     })
   })
   </script>
